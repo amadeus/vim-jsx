@@ -8,29 +8,25 @@ if exists('s:current_syntax')
   let b:current_syntax=s:current_syntax
 endif
 
-" Officially, vim-jsx depends on the pangloss/vim-javascript syntax package
-" (and is tested against it exclusively).  However, in practice, we make some
-" effort towards compatibility with other packages.
+" Officially, vim-jsx depends on the amadeus/vim-typescript syntax package
+" (and is tested against it exclusively).  These are the
+" plugin-to-syntax-element correspondences:
 "
-" These are the plugin-to-syntax-element correspondences:
-"
-"   - pangloss/vim-javascript:      jsBlock, jsExpression
-"   - jelera/vim-javascript-syntax: javascriptBlock
-"   - othree/yajs.vim:              javascriptNoReserved
+"   - amadeus/vim-typescript:      tsBlock, tsExpression
 
 
 " JSX attributes should color as JS.  Note the trivial end pattern; we let
-" jsBlock take care of ending the region.
-syn region xmlString contained start=+{+ end=++ contains=jsBlock,javascriptBlock
+" tsBlock take care of ending the region.
+syn region xmlString contained start=+{+ end=++ contains=tsBlock,javascriptBlock
 
 " JSX comments inside XML tag should color as comment.  Note the trivial end pattern; we let
-" jsComment take care of ending the region.
-syn region xmlString contained start=+//+ end=++ contains=jsComment
+" tsComment take care of ending the region.
+syn region xmlString contained start=+//+ end=++ contains=tsComment
 
 " JSX child blocks behave just like JSX attributes, except that (a) they are
 " syntactically distinct, and (b) they need the syn-extend argument, or else
-" nested XML end-tag patterns may end the outer jsxRegion.
-syn region jsxChild contained start=+{+ end=++ contains=jsBlock,javascriptBlock
+" nested XML end-tag patterns may end the outer tsxRegion.
+syn region tsxChild contained start=+{+ end=++ contains=tsBlock,javascriptBlock
   \ extend
 
 " Highlight JSX regions as XML; recursively match.
@@ -38,8 +34,8 @@ syn region jsxChild contained start=+{+ end=++ contains=jsBlock,javascriptBlock
 " Note that we prohibit JSX tags from having a < or word character immediately
 " preceding it, to avoid conflicts with, respectively, the left shift operator
 " and generic Flow type annotations (http://flowtype.org/).
-syn region jsxRegion
-  \ contains=@Spell,@XMLSyntax,jsxRegion,jsxChild,jsBlock,javascriptBlock
+syn region tsxRegion
+  \ contains=@Spell,@XMLSyntax,tsxRegion,tsxChild,tsBlock,javascriptBlock
   \ start=+\%(<\|\w\)\@<!<\z([a-zA-Z_][a-zA-Z0-9:\-.]*\>[:,]\@!\)\([^>]*>(\)\@!+
   \ skip=+<!--\_.\{-}-->+
   \ end=+</\z1\_\s\{-}>+
@@ -49,20 +45,20 @@ syn region jsxRegion
 
 " Shorthand fragment support
 "
-" Note that since the main jsxRegion contains @XMLSyntax, we cannot simply
+" Note that since the main tsxRegion contains @XMLSyntax, we cannot simply
 " adjust the regex above since @XMLSyntax will highlight the opening `<` as an
 " XMLError. Instead we create a new group with the same name that does not
 " include @XMLSyntax and instead uses matchgroup to get the same highlighting.
-syn region jsxRegion
-  \ contains=@Spell,jsxRegion,jsxChild,jsBlock,javascriptBlock
+syn region tsxRegion
+  \ contains=@Spell,tsxRegion,tsxChild,tsBlock,javascriptBlock
   \ matchgroup=xmlTag
   \ start=/<>/
   \ end=/<\/>/
   \ keepend
   \ extend
 
-" Add jsxRegion to the lowest-level JS syntax cluster.
-syn cluster jsExpression add=jsxRegion
+" Add tsxRegion to the lowest-level JS syntax cluster.
+syn cluster tsExpression add=tsxRegion
 
-" Allow jsxRegion to contain reserved words.
-syn cluster javascriptNoReserved add=jsxRegion
+" Allow tsxRegion to contain reserved words.
+syn cluster javascriptNoReserved add=tsxRegion
