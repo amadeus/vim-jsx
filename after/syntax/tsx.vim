@@ -22,6 +22,7 @@ syn region xmlString contained start=+{+ end=++ contains=tsBlock,javascriptBlock
 " JSX comments inside XML tag should color as comment.  Note the trivial end pattern; we let
 " tsComment take care of ending the region.
 syn region xmlString contained start=+//+ end=++ contains=tsComment
+syn region xmlString contained start=+/\*+ end=++ contains=tsComment fold extend keepend
 
 " JSX child blocks behave just like JSX attributes, except that (a) they are
 " syntactically distinct, and (b) they need the syn-extend argument, or else
